@@ -52,12 +52,12 @@ time.sleep(12)
 abas = navegador.window_handles
 navegador.switch_to.window(abas[1])
 
-time.sleep(5)
+time.sleep(6)
 
 # Selecionando a Empresa Exemplo 9999
 navegador.find_element(By.XPATH, "/html/body/bm-main/main/div[1]/ui-view/div[2]/div/div[1]/div/div[1]/navbar-left/dms-clients-combobox/div/div[2]/div[1]/input").send_keys("9999")
 
-time.sleep(4)
+time.sleep(6)
 
 # Aguarda até o elemento desejado estar na tela
 WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/bm-main/main/div[1]/ui-view/div[2]/div/div[1]/div/div[1]/navbar-left/dms-clients-combobox/div/div[2]/div[2]/div/ul/li[1]/bento-combobox-row-template/span[2]")))
@@ -71,9 +71,9 @@ WebDriverWait(navegador, 15).until(EC.presence_of_element_located((By.XPATH, "/h
 setorFiscal = navegador.find_element(By.XPATH, "/html/body/bm-main/main/div[1]/ui-view/div[2]/div/div[2]/div/section/div/documents-detail-pane/div/dms-storage-grid/div/div/div[9]/div[2]/div[1]/div[5]/div[3]/div/div/dms-grid-text-cell/div/span[1]/a")
 setorFiscal.click()
 
-# Clica no botão de adicionar um novo elemento
-WebDriverWait(navegador, 15).until(EC.presence_of_element_located((By.XPATH, "/html/body/bm-main/main/div[1]/ui-view/div[2]/div/div[2]/div/section/div/documents-detail-pane/div/dms-document-grid-toolbar/dms-toolbar/div/ul/li[1]/a")))
+time.sleep(5)
 
+# Clica no botão de adicionar um novo elemento
 botaoNovo = navegador.find_element(By.XPATH, '//*[@id="dms-fe-legacy-components-client-documents-new-menu-button"]')
 botaoNovo.click()
 
@@ -99,7 +99,7 @@ salvar.click()
 time.sleep(5)
 
 # Selecionar as subpastas do ano anterior com todos os meses e copiá-las no ano atual
-acessarAnoAnterior = navegador.find_element(By.XPATH, "/html/body/bm-main/main/div[1]/ui-view/div[2]/div/div[2]/div/section/div/documents-detail-pane/div/div/dms-document-grid/div/div/div[14]/div[2]/div[1]/div[2]/div[2]/div/span/dms-grid-text-cell/div/span[1]/a")
+acessarAnoAnterior = navegador.find_element(By.XPATH, '//*[@id="documentsTreeNavSplitter"]/section/div/documents-detail-pane/div/div/dms-document-grid/div/div/div[14]/div[2]/div[1]/div[2]/div[2]/div/span/dms-grid-text-cell/div/span[1]/a')
 acessarAnoAnterior.click()
 
 print(acessarAnoAnterior.text)
@@ -157,23 +157,39 @@ time.sleep(4)
 ### ----------------- ###
 
 # Copiando a Pasta do ano seguinte em todas as empresas
+listaEmpresas = []
+
 navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.CONTROL, 'a')
 navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.DELETE)
 
+for i in range(1, 6):
+    time.sleep(10)
+    mapearEmpresas = navegador.find_element(By.XPATH, f"/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[2]/div/ul/li[{i}]/bento-combobox-row-template/span[2]")
+
+    time.sleep(5)
+    listaEmpresas.append(mapearEmpresas.text)
+    print(mapearEmpresas.text)
+
+print(listaEmpresas)
+
+''' for empresa in listaEmpresas:
+    print(empresa.text)
+    navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.CONTROL, 'a')
+    navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.DELETE)
+
+    time.sleep(5)
+
+    navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(empresa.text)
+
+    time.sleep(5)
+
+    empresa.click()
+
+    time.sleep(5) '''
+
 time.sleep(5)
 
-navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys("2WV CONSTRUCOES E REFORMAS LTDA")
-
-WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="option-0"]/bento-combobox-row-template/span[2]')))
-
-time.sleep(10)
-
-selecionarEmpresa = navegador.find_element(By.XPATH, '//*[@id="option-0"]/bento-combobox-row-template/span[2]')
-selecionarEmpresa.click()
-
-time.sleep(3)
-
-pastasEmpresa = navegador.find_elements(By.XPATH, "item")
+''' pastasEmpresa = navegador.find_elements(By.CLASS_NAME, "item")
 
 for pasta in pastasEmpresa:
     if pasta.text == "Fiscal":
@@ -187,27 +203,12 @@ for pasta in pastasEmpresa:
 if fiscal:
     actionChains.double_click(local).perform()
 
-subpastas = navegador.find_elements(By.CLASS_NAME, "/html/body/div[1]/div/div/div/div[2]/div/div[1]/div/div/div/ul/li")
-
 pastaExiste = False
 
 time.sleep(5)
 
-for subpasta in subpastas:
-    print(subpasta.text)
-    if subpasta.text == "2026":
-        pastaExiste = True
-        print(subpasta.text)
-        break
-    else:
-        continue
-
-if pastaExiste:
-    sair = navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/button/i')
-    sair.click()
-else:
-    colar = navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[3]/button[1]')
-    colar.click()
+colar = navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[3]/button[1]')
+colar.click() '''
     
 
 time.sleep(10)
