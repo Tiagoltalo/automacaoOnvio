@@ -5,8 +5,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains as AC
 from pyautogui import moveTo, click
+import empresas
 import datetime
 import time
+
+listaEmpresas = empresas.listaEmpresasSemDuplicatas
+listaEmpresasCom2Duplicatas = empresas.empresasCom2Duplicatas
+listaEmpresasCom3Duplicatas = empresas.empresasCom3Duplicatas
+listaEmpresasCom4Duplicatas = empresas.empresasCom4Duplicatas
+listaEmpresasCom5Duplicatas = empresas.empresasCom5Duplicatas
+listaEmpresasCom7Duplicatas = empresas.empresasCom7Duplicatas
+listaEmpresasCom11Duplicatas = empresas.empresasCom11Duplicatas
+
 
 navegador = webdriver.Chrome()
 
@@ -104,7 +114,7 @@ acessarAnoAnterior.click()
 
 print(acessarAnoAnterior.text)
 
-time.sleep(2)
+time.sleep(5)
 
 # Seleciona e copia todas as subpastas da pasta 2025
 selecionarSubpastas = navegador.find_element(By.XPATH, "/html/body/bm-main/main/div[1]/ui-view/div[2]/div/div[2]/div/section/div/documents-detail-pane/div/div/dms-document-grid/div/div/div[14]/div[7]/div/div/div/div/i")
@@ -157,61 +167,51 @@ time.sleep(4)
 ### ----------------- ###
 
 # Copiando a Pasta do ano seguinte em todas as empresas
-listaEmpresas = []
 
-navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.CONTROL, 'a')
-navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.DELETE)
+contador = 0
 
-for i in range(1, 6):
-    time.sleep(10)
-    mapearEmpresas = navegador.find_element(By.XPATH, f"/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[2]/div/ul/li[{i}]/bento-combobox-row-template/span[2]")
+for empresa in listaEmpresas:
+    contador += 1
 
-    time.sleep(5)
-    listaEmpresas.append(mapearEmpresas.text)
-    print(mapearEmpresas.text)
+    print(f"{empresa} - OK")
 
-print(listaEmpresas)
+    time.sleep(3)
 
-''' for empresa in listaEmpresas:
-    print(empresa.text)
     navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.CONTROL, 'a')
     navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(Keys.DELETE)
+    
+    navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(empresa)
 
-    time.sleep(5)
+    WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[2]/div/ul/li[1]/bento-combobox-row-template/span[2]')))
 
-    navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[1]/input').send_keys(empresa.text)
+    empresaSelecionada = navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[2]/div/dms-clients-combobox/div/div[2]/div[2]/div/ul/li[1]/bento-combobox-row-template/span[2]')
 
-    time.sleep(5)
+    time.sleep(3)
 
-    empresa.click()
+    empresaSelecionada.click()
 
-    time.sleep(5) '''
+    time.sleep(3)
 
-time.sleep(5)
+    pastasEmpresa = navegador.find_elements(By.CLASS_NAME, "item")
 
-''' pastasEmpresa = navegador.find_elements(By.CLASS_NAME, "item")
+    for pasta in pastasEmpresa:
+        if pasta.text == "Fiscal":
+            print(pasta.text)
+            fiscal = True
+            local = pasta
+            break
+        else:
+            continue
 
-for pasta in pastasEmpresa:
-    if pasta.text == "Fiscal":
-        print(pasta.text)
-        fiscal = True
-        local = pasta
+    if fiscal:
+        actionChains.double_click(local).perform()
+
+    colarPastaAnoSeguinte = navegador.find_element(By.XPATH, "/html/body/div[1]/div/div/div/div[3]/button[1]")
+    colarPastaAnoSeguinte.click()
+
+    if contador >= 3:
         break
     else:
         continue
 
-if fiscal:
-    actionChains.double_click(local).perform()
-
-pastaExiste = False
-
-time.sleep(5)
-
-colar = navegador.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[3]/button[1]')
-colar.click() '''
-    
-
 time.sleep(10)
-
-#colarPastaAnoSeguinte = navegador.find_element(By.XPATH, "/html/body/div[1]/div/div/div/div[3]/button[1]")
-#colarPastaAnoSeguinte.click()    
