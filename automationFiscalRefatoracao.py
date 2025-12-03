@@ -195,7 +195,6 @@ def percorrerEmpresasCom11Duplicatas(navegador):
 
 
 
-
 ### X --- Fluxo Principal do Código --- X ###
 
 acessarSite(navegador, xpathEntrarForm)
